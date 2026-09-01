@@ -980,9 +980,20 @@ section[id] {
   font-size: .85rem;
 }
 
+/* strong and small are inline by default, so without this the title and the
+   subtitle run together on one line. min-width:0 lets long text wrap inside
+   the flex row instead of pushing the card wider. */
+.hi-text {
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+  min-width: 0;
+}
+
 .highlight-item strong {
   font-size: .92rem;
   font-weight: 650;
+  line-height: 1.35;
 }
 
 .highlight-item small {

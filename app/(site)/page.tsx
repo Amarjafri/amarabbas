@@ -158,7 +158,7 @@ export default function HomePage() {
                         <span className="hi-icon">
                           <i className={highlight.icon} aria-hidden="true"></i>
                         </span>
-                        <div>
+                        <div className="hi-text">
                           <strong>{highlight.title}</strong>
                           {highlight.subtitle && <small>{highlight.subtitle}</small>}
                         </div>
