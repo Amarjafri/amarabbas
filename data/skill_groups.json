@@ -3,11 +3,11 @@
         "id": 1,
         "icon": "fas fa-code",
         "title": "Languages & Frameworks",
-        "skills": "PHP, Laravel, Vue.js, JavaScript, jQuery, HTML5, CSS3, Bootstrap",
+        "skills": "PHP, Laravel, Node.js, React.js, Vue.js, JavaScript, jQuery, HTML5, CSS3, Bootstrap",
         "sort_order": 0,
         "active": true,
         "created_at": "2026-07-30T05:17:46.000Z",
-        "updated_at": "2026-07-30T05:17:46.000Z"
+        "updated_at": "2026-09-01T00:00:00.000Z"
     },
     {
         "id": 2,

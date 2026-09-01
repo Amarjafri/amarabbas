@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
    AMAR ABBAS — PORTFOLIO
    Direction: "Foundry" — Graphite & Copper
-   Type: Fraunces (display) · Inter Tight (body) · JetBrains Mono (meta)
+   Type: Newsreader (display) · Inter Tight (body) · JetBrains Mono (meta)
 
    Every colour is a token on :root. Dark is the base theme; light is a
    token swap. Do not hard-code a hex below the token block.
@@ -41,7 +41,7 @@
   --shadow-3: 0 4px 8px rgba(0, 0, 0, .32), 0 24px 56px rgba(0, 0, 0, .4);
 
   /* ── Type ── */
-  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Newsreader', 'Iowan Old Style', Georgia, serif;
   --font-body: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
 
@@ -726,11 +726,14 @@ section[id] {
   align-items: center;
 }
 
+/* Spacing is set per element rather than by one blanket gap: the badge and
+   eyebrow read as a single meta group, and the break before the buttons is
+   what separates "who I am" from "what to do next". */
 .hero-content {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.5rem;
+  gap: 0;
 }
 
 .hero-badge {
@@ -746,6 +749,7 @@ section[id] {
   border: 1px solid var(--rule);
   border-radius: 99px;
   padding: .36rem .8rem;
+  margin-bottom: .85rem;
 }
 
 .badge-dot {
@@ -756,21 +760,24 @@ section[id] {
   box-shadow: 0 0 0 3px var(--second-soft);
 }
 
+/* A byline, not a second label: the pill above is already uppercase mono, and
+   stacking two of those is what made the hero read as a template. */
 .hero-eyebrow {
-  font-family: var(--font-mono);
-  font-size: .78rem;
+  font-family: var(--font-body);
+  font-size: .95rem;
   font-weight: 500;
-  letter-spacing: .12em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--ink-3);
-  margin-bottom: -.9rem;
+  margin-bottom: .6rem;
 }
 
 .hero-title {
   font-size: clamp(2.6rem, 6vw, 4.6rem);
-  line-height: 1.02;
-  letter-spacing: -.028em;
+  line-height: 1.06;
+  letter-spacing: -.021em;
   max-width: 15ch;
+  margin-bottom: 1.15rem;
 }
 
 .hero-title em {
@@ -781,7 +788,9 @@ section[id] {
 .hero-desc {
   color: var(--ink-2);
   font-size: clamp(1rem, 1.35vw, 1.1rem);
+  line-height: 1.6;
   max-width: 52ch;
+  margin-bottom: 1.9rem;
 }
 
 .hero-desc strong {
@@ -793,7 +802,6 @@ section[id] {
   flex-wrap: wrap;
   align-items: center;
   gap: .7rem;
-  margin-top: .25rem;
 }
 
 /* Stats */
@@ -805,7 +813,7 @@ section[id] {
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   overflow: hidden;
-  margin-top: 1rem;
+  margin-top: 2.4rem;
 }
 
 .stat {
@@ -3485,12 +3493,12 @@ section[id] {
 
 /* ───────────────────────────────────────────────────────────────
    NEXT.JS PORT — self-hosted fonts
-   next/font loads Fraunces / Inter Tight / JetBrains Mono and exposes
+   next/font loads Newsreader / Inter Tight / JetBrains Mono and exposes
    them as the three variables below. Same faces, same fallback stacks
    as the Laravel build; only the delivery changed (no Google request).
    ─────────────────────────────────────────────────────────────── */
 :root {
-  --font-display: var(--font-fraunces), 'Iowan Old Style', Georgia, serif;
+  --font-display: var(--font-newsreader), 'Iowan Old Style', Georgia, serif;
   --font-body: var(--font-inter-tight), system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, 'Cascadia Mono', Consolas, monospace;
 }

@@ -117,21 +117,39 @@
         "updated_at": "2026-07-30T05:17:46.000Z"
     },
     {
+        "id": 16,
+        "icon": "fab fa-react",
+        "label": "React.js",
+        "sort_order": 13,
+        "active": true,
+        "created_at": "2026-09-01T00:00:00.000Z",
+        "updated_at": "2026-09-01T00:00:00.000Z"
+    },
+    {
         "id": 14,
         "icon": "fab fa-bootstrap",
         "label": "Bootstrap",
-        "sort_order": 13,
+        "sort_order": 14,
         "active": true,
         "created_at": "2026-07-30T05:17:46.000Z",
-        "updated_at": "2026-07-30T05:17:46.000Z"
+        "updated_at": "2026-09-01T00:00:00.000Z"
+    },
+    {
+        "id": 17,
+        "icon": "fab fa-node-js",
+        "label": "Node.js",
+        "sort_order": 15,
+        "active": true,
+        "created_at": "2026-09-01T00:00:00.000Z",
+        "updated_at": "2026-09-01T00:00:00.000Z"
     },
     {
         "id": 15,
         "icon": "fab fa-figma",
         "label": "Figma",
-        "sort_order": 14,
+        "sort_order": 16,
         "active": true,
         "created_at": "2026-07-30T05:17:46.000Z",
-        "updated_at": "2026-07-30T05:17:46.000Z"
+        "updated_at": "2026-09-01T00:00:00.000Z"
     }
 ]

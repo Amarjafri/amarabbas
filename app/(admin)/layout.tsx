@@ -1,15 +1,16 @@
 import type { Metadata } from 'next'
-import { Fraunces, Inter_Tight, JetBrains_Mono } from 'next/font/google'
+import { Inter_Tight, JetBrains_Mono, Newsreader } from 'next/font/google'
 
 import './admin.css'
 
 // The admin panel is a separate root layout so it loads admin.css only — the
 // two stylesheets each define their own :root tokens, reset and body rules, and
 // would fight if both were on the page.
-const fraunces = Fraunces({
+const newsreader = Newsreader({
   subsets: ['latin'],
-  weight: ['500', '600', '700'],
-  variable: '--font-fraunces',
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-newsreader',
   display: 'swap',
 })
 
@@ -43,7 +44,7 @@ export default function AdminRootLayout({ children }: { children: React.ReactNod
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
+      className={`${newsreader.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
       <head>

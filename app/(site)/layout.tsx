@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Fraunces, Inter_Tight, JetBrains_Mono } from 'next/font/google'
+import { Inter_Tight, JetBrains_Mono, Newsreader } from 'next/font/google'
 
 import './globals.css'
 import SiteBehaviour from '@/components/SiteBehaviour'
@@ -7,13 +7,17 @@ import SiteFooter from '@/components/SiteFooter'
 import SiteHeader from '@/components/SiteHeader'
 import { setting } from '@/lib/data'
 
-// Same three faces as the Laravel build (Fraunces · Inter Tight · JetBrains
-// Mono), self-hosted by next/font instead of fetched from Google at runtime.
+// Self-hosted by next/font instead of fetched from Google at runtime.
 // globals.css maps --font-display/-body/-mono onto these variables.
-const fraunces = Fraunces({
+//
+// The display face carries a real italic: .hero-title em asks for one, and
+// without the file loaded the browser fakes it by slanting the upright glyphs —
+// which reads as cheap at 4.6rem. Keep 'italic' in style whenever this changes.
+const newsreader = Newsreader({
   subsets: ['latin'],
-  weight: ['500', '600', '700'],
-  variable: '--font-fraunces',
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-newsreader',
   display: 'swap',
 })
 
@@ -81,7 +85,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
+      className={`${newsreader.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
       <head>
