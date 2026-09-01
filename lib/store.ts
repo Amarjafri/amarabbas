@@ -18,7 +18,9 @@ import type { CollectionName } from './types'
  * lib/data.ts, which are bundled at build time.
  */
 
-const DATA_DIR = 'nextjs/data'
+// Repo-relative path to the JSON. The app is the repository root, so this has
+// no folder prefix — an earlier layout kept the app in a nextjs/ subfolder.
+const DATA_DIR = 'data'
 
 /** Thrown with a message the admin UI can show as-is. */
 export class StoreError extends Error {

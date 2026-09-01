@@ -31,10 +31,10 @@ changed JSON when you are happy with it.
 
 ## 2. Push to GitHub
 
-The whole repository is pushed as-is; `nextjs/` is a sub-folder of it.
+The app is the repository root — `package.json` and `data/` sit at the top level.
 
 ```bash
-git add nextjs
+git add .
 git commit -m "Add Next.js port"
 git push
 ```
@@ -42,8 +42,7 @@ git push
 ## 3. Import on Vercel
 
 1. Vercel → **Add New… → Project** → import this repository.
-2. **Root Directory: `nextjs`** — this matters; without it the build will not
-   find `package.json`.
+2. **Root Directory: `./`** — the default. The app is the repository root.
 3. Framework preset: Next.js (detected automatically). Leave the build and
    output settings alone.
 4. Deploy.
@@ -152,7 +151,7 @@ repository root:
 php artisan export:json
 ```
 
-That rewrites every file in `nextjs/data/`. Review the diff before committing —
+That rewrites every file in `data/`. Review the diff before committing —
 it is the only thing standing between the old database and the live site.
 
 ## 10. Known gaps carried over from the Laravel site
