@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "icon": "fas fa-graduation-cap",
+        "title": "BSCS Graduate",
+        "subtitle": "NCBA&E, Multan — 2023",
+        "sort_order": 0,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    },
+    {
+        "id": 2,
+        "icon": "fas fa-location-dot",
+        "title": "Based in Lahore",
+        "subtitle": "Punjab, Pakistan",
+        "sort_order": 1,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    },
+    {
+        "id": 3,
+        "icon": "fas fa-earth-asia",
+        "title": "Available Globally",
+        "subtitle": "Remote · On-site · Hybrid",
+        "sort_order": 2,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    },
+    {
+        "id": 4,
+        "icon": "fas fa-comments",
+        "title": "Languages",
+        "subtitle": "English (Fluent) · Urdu (Native)",
+        "sort_order": 3,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    }
+]

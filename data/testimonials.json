@@ -1,0 +1,80 @@
+[
+    {
+        "id": 1,
+        "name": "Michael Carter",
+        "position": "Project Manager",
+        "company": "Northwave Solutions",
+        "message": "The Monk Cables eCommerce platform was delivered with excellent attention to detail. The product structure, performance, and responsive design were exactly what we needed for a modern online store.",
+        "rating": 5,
+        "avatar": null,
+        "active": true,
+        "sort_order": 0,
+        "created_at": "2026-05-13T05:59:05.000Z",
+        "updated_at": "2026-05-13T05:59:05.000Z"
+    },
+    {
+        "id": 2,
+        "name": "Sarah Johnson",
+        "position": "IT Director",
+        "company": "BrightEdge Systems",
+        "message": "The developer built a clean and scalable eCommerce system with smooth navigation and strong backend structure. The project was delivered on time and exceeded expectations in usability and design.",
+        "rating": 5,
+        "avatar": null,
+        "active": true,
+        "sort_order": 0,
+        "created_at": "2026-05-13T06:00:12.000Z",
+        "updated_at": "2026-05-13T06:00:12.000Z"
+    },
+    {
+        "id": 3,
+        "name": "James Wilson",
+        "position": "Technical Lead",
+        "company": "CloudNova Tech",
+        "message": "The platform is well-structured and scalable. Product management and UI flow are very smooth.",
+        "rating": 5,
+        "avatar": null,
+        "active": true,
+        "sort_order": 4,
+        "created_at": "2026-05-13T11:02:17.000Z",
+        "updated_at": "2026-05-13T11:02:17.000Z"
+    },
+    {
+        "id": 4,
+        "name": "Emily Davis",
+        "position": "Product Manager",
+        "company": "NextGen Solutions",
+        "message": "Excellent work on the eCommerce system. Everything is clean, fast, and user-friendly.",
+        "rating": 5,
+        "avatar": null,
+        "active": true,
+        "sort_order": 5,
+        "created_at": "2026-05-13T11:02:17.000Z",
+        "updated_at": "2026-05-13T11:02:17.000Z"
+    },
+    {
+        "id": 5,
+        "name": "Robert Miller",
+        "position": "CTO",
+        "company": "Skyline Systems",
+        "message": "Strong backend architecture and responsive frontend design. Very professional execution.",
+        "rating": 5,
+        "avatar": null,
+        "active": true,
+        "sort_order": 6,
+        "created_at": "2026-05-13T11:02:17.000Z",
+        "updated_at": "2026-05-13T11:02:17.000Z"
+    },
+    {
+        "id": 6,
+        "name": "Ava Brown",
+        "position": "UI/UX Designer",
+        "company": "PixelCraft Studio",
+        "message": "The design implementation is very close to modern UI standards. Great attention to detail.",
+        "rating": 5,
+        "avatar": null,
+        "active": true,
+        "sort_order": 7,
+        "created_at": "2026-05-13T11:02:17.000Z",
+        "updated_at": "2026-05-13T11:02:17.000Z"
+    }
+]

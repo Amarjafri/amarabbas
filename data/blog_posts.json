@@ -1,0 +1,54 @@
+[
+    {
+        "id": 1,
+        "title": "How to Build a Modern eCommerce Website",
+        "slug": "how-to-build-modern-ecommerce-website",
+        "excerpt": "A step-by-step guide to building a scalable and modern eCommerce platform.",
+        "body": "In this article, we explore how to build a modern eCommerce website using best practices in frontend and backend development. We cover database design, product management, cart systems, and performance optimization techniques...",
+        "category": "Development",
+        "image": null,
+        "published": true,
+        "read_time": 6,
+        "created_at": "2026-05-13T11:03:08.000Z",
+        "updated_at": "2026-05-13T11:03:08.000Z"
+    },
+    {
+        "id": 2,
+        "title": "Top 10 Web Development Tips for Beginners",
+        "slug": "top-10-web-development-tips-beginners",
+        "excerpt": "Essential tips every beginner should know before starting web development.",
+        "body": "Starting with web development can be overwhelming. This article breaks down the top 10 practical tips including learning HTML/CSS fundamentals, understanding JavaScript, practicing projects, and using version control effectively...",
+        "category": "Web Development",
+        "image": null,
+        "published": true,
+        "read_time": 5,
+        "created_at": "2026-05-13T11:03:08.000Z",
+        "updated_at": "2026-05-13T11:03:08.000Z"
+    },
+    {
+        "id": 3,
+        "title": "Why Responsive Design is Important in 2026",
+        "slug": "why-responsive-design-important-2026",
+        "excerpt": "Responsive design is no longer optional in modern web development.",
+        "body": "With increasing mobile usage, responsive design has become a critical part of web development. This article explains why mobile-first design, flexible layouts, and media queries are essential for modern websites...",
+        "category": "UI/UX",
+        "image": null,
+        "published": true,
+        "read_time": 4,
+        "created_at": "2026-05-13T11:03:08.000Z",
+        "updated_at": "2026-05-13T11:03:08.000Z"
+    },
+    {
+        "id": 4,
+        "title": "Laravel vs Node.js: Which One Should You Choose?",
+        "slug": "laravel-vs-nodejs-which-should-you-choose",
+        "excerpt": "A comparison between Laravel and Node.js for backend development.",
+        "body": "Choosing between Laravel and Node.js depends on your project requirements. Laravel offers structured MVC architecture, while Node.js provides flexibility and high performance for real-time applications...",
+        "category": "Backend",
+        "image": null,
+        "published": true,
+        "read_time": 7,
+        "created_at": "2026-05-13T11:03:08.000Z",
+        "updated_at": "2026-05-13T11:03:08.000Z"
+    }
+]

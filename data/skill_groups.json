@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "icon": "fas fa-code",
+        "title": "Languages & Frameworks",
+        "skills": "PHP, Laravel, Vue.js, JavaScript, jQuery, HTML5, CSS3, Bootstrap",
+        "sort_order": 0,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    },
+    {
+        "id": 2,
+        "icon": "fas fa-database",
+        "title": "Databases",
+        "skills": "MySQL, Firebase Realtime DB, Database Design, Query Optimization, Migrations",
+        "sort_order": 1,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    },
+    {
+        "id": 3,
+        "icon": "fas fa-cloud",
+        "title": "Cloud & Hosting",
+        "skills": "AWS, Google Cloud, VPS, cPanel, Cloudflare, SSL/TLS, FTP",
+        "sort_order": 2,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    },
+    {
+        "id": 4,
+        "icon": "fas fa-gears",
+        "title": "Tools & DevOps",
+        "skills": "Git, GitLab, GitHub, Postman, Figma, Docker, CI/CD",
+        "sort_order": 3,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    },
+    {
+        "id": 5,
+        "icon": "fas fa-shopping-cart",
+        "title": "CMS & eCommerce",
+        "skills": "WordPress, Shopify, WooCommerce, Theme Development, Plugin Development",
+        "sort_order": 4,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    },
+    {
+        "id": 6,
+        "icon": "fas fa-sitemap",
+        "title": "Architecture",
+        "skills": "RESTful APIs, MVC Pattern, Agile/Scrum, Web Security, Code Optimization, TDD",
+        "sort_order": 5,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    }
+]

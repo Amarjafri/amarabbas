@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "number": "3+",
+        "label": "Years Experience",
+        "short_label": "Years",
+        "sort_order": 0,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    },
+    {
+        "id": 2,
+        "number": "20+",
+        "label": "Projects Delivered",
+        "short_label": "Projects",
+        "sort_order": 1,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    },
+    {
+        "id": 3,
+        "number": "5",
+        "label": "Companies",
+        "short_label": "Companies",
+        "sort_order": 2,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    }
+]

@@ -1,0 +1,58 @@
+[
+    {
+        "id": 1,
+        "icon": "fas fa-envelope",
+        "label": "Email",
+        "value": "amarjafri1472@gmail.com",
+        "url": "mailto:amarjafri1472@gmail.com",
+        "sort_order": 0,
+        "in_contact": true,
+        "in_footer": true,
+        "is_social_btn": true,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    },
+    {
+        "id": 2,
+        "icon": "fab fa-whatsapp",
+        "label": "Phone / WhatsApp",
+        "value": "+92 314 616 7055",
+        "url": "https://wa.me/923146167055",
+        "sort_order": 1,
+        "in_contact": true,
+        "in_footer": true,
+        "is_social_btn": false,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    },
+    {
+        "id": 3,
+        "icon": "fab fa-linkedin-in",
+        "label": "LinkedIn",
+        "value": "linkedin.com/in/amar-abbas-jafri",
+        "url": "https://linkedin.com/in/amar-abbas-jafri",
+        "sort_order": 2,
+        "in_contact": true,
+        "in_footer": true,
+        "is_social_btn": true,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    },
+    {
+        "id": 4,
+        "icon": "fab fa-github",
+        "label": "GitHub",
+        "value": "github.com/Amarjafri",
+        "url": "https://github.com/Amarjafri",
+        "sort_order": 3,
+        "in_contact": true,
+        "in_footer": true,
+        "is_social_btn": true,
+        "active": true,
+        "created_at": "2026-07-30T05:17:46.000Z",
+        "updated_at": "2026-07-30T05:17:46.000Z"
+    }
+]
