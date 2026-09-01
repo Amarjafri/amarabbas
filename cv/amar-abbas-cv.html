@@ -1,0 +1,370 @@
+<!--
+  Source for public/files/amar-abbas-cv.pdf.
+
+  Edit this file, then regenerate the PDF with headless Chrome:
+
+    chrome --headless --no-pdf-header-footer --print-to-pdf=public/files/amar-abbas-cv.pdf cv/amar-abbas-cv.html
+
+  Kept out of public/ so it is not served alongside the PDF. The type and
+  accent match the site so the CV and the portfolio read as one thing.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Amar Abbas — Senior Full-Stack Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 11mm 13mm 10mm; }
+
+  :root {
+    --accent: #b0602a;
+    --ink:    #1c1f23;
+    --ink-2:  #3f464d;
+    --ink-3:  #6b737b;
+    --rule:   #d9dce0;
+    --rule-2: #ebedef;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 8.6pt;
+    line-height: 1.40;
+    color: var(--ink-2);
+    background: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Header ───────────────────────────────────────────────── */
+  .name {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 24pt;
+    font-weight: 600;
+    line-height: 1.04;
+    letter-spacing: -.015em;
+    color: var(--ink);
+  }
+
+  .role {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 10pt;
+    font-style: italic;
+    color: var(--accent);
+    margin-top: 2pt;
+  }
+
+  .contact {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5pt;
+    color: var(--ink-3);
+    margin-top: 7pt;
+    letter-spacing: -.01em;
+  }
+  .contact a { color: inherit; text-decoration: none; }
+  .contact span { white-space: nowrap; }
+  .sep { color: var(--rule); padding: 0 4pt; }
+
+  header {
+    border-bottom: 1.6pt solid var(--accent);
+    padding-bottom: 7pt;
+    margin-bottom: 9pt;
+  }
+
+  /* ── Sections ─────────────────────────────────────────────── */
+  section { margin-bottom: 8.5pt; }
+
+  h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.6pt;
+    font-weight: 500;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-bottom: 3pt;
+    border-bottom: .6pt solid var(--rule);
+    margin-bottom: 6.5pt;
+    /* never leave a section heading stranded at the foot of a page */
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .summary { text-align: justify; }
+
+  /* ── Entries ──────────────────────────────────────────────── */
+  .entry { margin-bottom: 7pt; break-inside: avoid; }
+  .entry:last-child { margin-bottom: 0; }
+
+  .entry-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10pt;
+  }
+
+  .entry-title {
+    font-size: 9.6pt;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .entry-title .at { color: var(--accent); font-weight: 600; }
+
+  .entry-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.3pt;
+    color: var(--ink-3);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .entry-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.3pt;
+    color: var(--ink-3);
+    margin-top: 1.5pt;
+  }
+
+  ul { list-style: none; margin-top: 4pt; }
+
+  li {
+    position: relative;
+    padding-left: 9pt;
+    margin-bottom: 1.2pt;
+  }
+  li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5.2pt;
+    width: 3pt;
+    height: 3pt;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: .55;
+  }
+
+  .stack {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.2pt;
+    color: var(--ink-3);
+    margin-top: 4pt;
+  }
+  .stack b { color: var(--ink-2); font-weight: 500; }
+
+  /* ── Skills ───────────────────────────────────────────────── */
+  .skills { display: grid; gap: 3.5pt; }
+  .skill-row { display: grid; grid-template-columns: 112pt 1fr; gap: 8pt; }
+  .skill-key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.3pt;
+    color: var(--accent);
+    padding-top: .8pt;
+  }
+
+  /* ── Footer rows ──────────────────────────────────────────── */
+  .row { display: grid; grid-template-columns: 112pt 1fr; gap: 8pt; margin-bottom: 3pt; }
+  .row-key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.3pt;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="name">Amar Abbas</div>
+  <div class="role">Senior Full-Stack Developer · Laravel · RESTful APIs · MySQL</div>
+  <div class="contact">
+    <span>amarjafri1472@gmail.com</span><span class="sep">|</span><span>+92 314 616 7055</span><span class="sep">|</span><span>Lahore, Pakistan</span><br>
+    <span>github.com/Amarjafri</span><span class="sep">|</span><span>linkedin.com/in/amar-abbas-jafri</span><span class="sep">|</span><span>amarabbas.vercel.app</span>
+  </div>
+</header>
+
+<section>
+  <h2>Professional Summary</h2>
+  <p class="summary">Results-driven Senior Full-Stack Developer with 4+ years of experience and 30+ delivered projects — designing, building, and deploying scalable, secure, and high-performance web applications for clients across Pakistan and internationally. Expert in Laravel, RESTful APIs, and MySQL, with proven experience in eCommerce platforms, HRM &amp; biometric systems, SaaS products, educational systems, and business automation. Skilled in cloud deployment (AWS, Google Cloud), CI/CD pipelines, and collaborating with cross-functional teams to deliver clean, maintainable code on time.</p>
+</section>
+
+<section>
+  <h2>Professional Experience</h2>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">Senior Full-Stack Developer <span class="at">· Eden Prime</span></div>
+      <div class="entry-meta">Sep 2025 — Present</div>
+    </div>
+    <div class="entry-sub">Lahore, Pakistan · On-site</div>
+    <ul>
+      <li>Develop and maintain scalable full-stack web applications using Laravel for eCommerce and business-focused clients.</li>
+      <li>Architected a complete HRM &amp; Biometric Attendance platform (Laravel 12) with multi-device ZKTeco integration, shift/overtime rules, leave management, and role-based dashboards.</li>
+      <li>Design and implement RESTful APIs ensuring seamless, secure integration between frontend and backend systems.</li>
+      <li>Optimize application performance, database architecture, and server-side logic for high-traffic environments.</li>
+      <li>Collaborate with designers and product teams to deliver high-quality digital products on schedule.</li>
+    </ul>
+    <div class="stack"><b>Skills:</b> Laravel, MySQL, REST APIs, AWS, Cloud Deployment</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">Senior Laravel Full-Stack Developer <span class="at">· Digitt Solutions</span></div>
+      <div class="entry-meta">Jan 2025 — Sep 2025 · 9 mos</div>
+    </div>
+    <div class="entry-sub">Lahore, Pakistan · On-site</div>
+    <ul>
+      <li>Led development of scalable web applications using Laravel, RESTful APIs, and MySQL.</li>
+      <li>Designed and optimized backend logic, APIs, and database structures for high performance and security.</li>
+      <li>Collaborated with cross-functional teams to deliver responsive and user-friendly UIs.</li>
+      <li>Contributed to WordPress and Shopify projects including bug fixing, feature additions, performance improvements, and small customizations.</li>
+      <li>Ensured clean code, best practices, and efficient deployments on cloud and hosting environments.</li>
+    </ul>
+    <div class="stack"><b>Skills:</b> PHP, Laravel, MySQL, WordPress, Shopify, CI/CD</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">Laravel Full-Stack Developer <span class="at">· Infobay (SMC PVT.) Ltd</span></div>
+      <div class="entry-meta">Oct 2023 — Dec 2024 · 1 yr 3 mos</div>
+    </div>
+    <div class="entry-sub">Lahore, Pakistan · On-site</div>
+    <ul>
+      <li>Led development of responsive web applications using Laravel.</li>
+      <li>Integrated third-party APIs, developed RESTful endpoints, and maintained backend logic.</li>
+      <li>Managed version control and CI/CD deployments via Git and GitLab.</li>
+      <li>Optimized app performance and scalability; implemented security best practices.</li>
+      <li>Collaborated with UI/UX designers for seamless front-end integration.</li>
+    </ul>
+    <div class="stack"><b>Skills:</b> Laravel, MySQL, REST APIs, Git, GitLab</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">Laravel Developer <span class="at">· Avicenna Enterprise Solutions</span></div>
+      <div class="entry-meta">Dec 2022 — Sep 2023 · 10 mos</div>
+    </div>
+    <div class="entry-sub">Lahore, Pakistan</div>
+    <ul>
+      <li>Developed server-side logic and database structures with MySQL and Firebase.</li>
+      <li>Maintained responsive UI using HTML/CSS/JavaScript.</li>
+      <li>Built RESTful APIs; managed website hosting via cPanel and various server environments.</li>
+    </ul>
+    <div class="stack"><b>Skills:</b> Laravel, MySQL, Firebase, cPanel</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">Junior Developer <span class="at">· CyberifyDesign.co</span></div>
+      <div class="entry-meta">Feb 2022 — Nov 2022 · 10 mos</div>
+    </div>
+    <div class="entry-sub">Multan, Pakistan</div>
+    <ul>
+      <li>Assisted senior developers with bug fixing and feature rollouts.</li>
+      <li>Performed server-side scripting and Git version control.</li>
+      <li>Participated in Agile sprints and UI testing.</li>
+    </ul>
+    <div class="stack"><b>Skills:</b> PHP, Laravel, Git, Agile</div>
+  </div>
+</section>
+
+<section>
+  <h2>Key Projects</h2>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">HRM &amp; Biometric Attendance System <span class="at">· hrms.edenprime.net</span></div>
+      <div class="entry-meta">Enterprise HR Platform</div>
+    </div>
+    <ul>
+      <li>Comprehensive HRM automating employee management, biometric attendance via multiple ZKTeco devices across floors, late/overtime/short-hour rules, leave workflows, attendance exceptions, role-based access (Super Admin/HR/Manager/Employee), and Excel/PDF reporting.</li>
+    </ul>
+    <div class="stack"><b>Tech:</b> Laravel 12, MySQL, ZKTeco SDK, Spatie Permission, Laravel Excel, DomPDF</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">Monk Cables <span class="at">· monkcables.com</span></div>
+      <div class="entry-meta">Full-Stack eCommerce Platform</div>
+    </div>
+    <ul>
+      <li>Built and maintained the full eCommerce platform for a leading US-based network cables brand (ISO-certified, RoHS-approved). Developed product catalog, cart, user authentication, order management, and cloud hosting deployment using a Laravel backend with a fully responsive frontend.</li>
+    </ul>
+    <div class="stack"><b>Tech:</b> Laravel, MySQL, REST APIs, Cloud Hosting</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">Yasrab Testing System <span class="at">· yasrabtest.com</span></div>
+      <div class="entry-meta">Online Education &amp; Entry Test Prep</div>
+    </div>
+    <ul>
+      <li>Developed Pakistan's #1 entry test preparation system supporting MDCAT, ECAT, NUMS, AGA KHAN, FAST, GIKI, PPSC/FPSC, and Matric/Inter coaching. Built course management, category browsing, student enrollment, and performance tracking modules.</li>
+    </ul>
+    <div class="stack"><b>Tech:</b> Laravel, MySQL, REST APIs, Bootstrap</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">Multi-Site Blog Management Dashboard</div>
+      <div class="entry-meta">Custom CMS · 40+ Live Websites</div>
+    </div>
+    <ul>
+      <li>Single Laravel admin panel managing content and full on-page SEO (meta tags, Open Graph, JSON-LD schema) across 40+ independently hosted websites, with strictly additive migrations on a live production database and an API-key-protected REST layer for cross-host content delivery.</li>
+    </ul>
+    <div class="stack"><b>Tech:</b> Laravel, MySQL, Bootstrap 5, TinyMCE, REST API, JSON-LD Schema</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">Sidewalk Repair NYC <span class="at">· sidewalkrepairnyc.com</span></div>
+      <div class="entry-meta">Business Lead-Generation Website</div>
+    </div>
+    <ul>
+      <li>Custom Laravel website for an NYC sidewalk &amp; concrete contractor — SEO-optimized service pages, schema markup, local SEO targeting, secure validated contact forms, and fast responsive performance for lead generation.</li>
+    </ul>
+    <div class="stack"><b>Tech:</b> Laravel, PHP, Blade, MySQL, Bootstrap, SEO Optimisation</div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head">
+      <div class="entry-title">Airport Express Taxi <span class="at">· airportexpresstaxi.co.uk</span></div>
+      <div class="entry-meta">Airport Transfer Booking Platform</div>
+    </div>
+    <ul>
+      <li>Modern booking platform for a UK-based taxi service with instant fare estimates, multi-vehicle selection, one-way/return journey management, and reusable components for fleet, services, and FAQs.</li>
+    </ul>
+    <div class="stack"><b>Tech:</b> Laravel, PHP, Blade, MySQL, Bootstrap, REST API</div>
+  </div>
+</section>
+
+<section>
+  <h2>Technical Skills</h2>
+  <div class="skills">
+    <div class="skill-row"><div class="skill-key">Languages &amp; Frameworks</div><div>PHP, Laravel, Node.js, React.js, Vue.js, JavaScript, jQuery, HTML5, CSS3, Bootstrap</div></div>
+    <div class="skill-row"><div class="skill-key">Databases</div><div>MySQL, Firebase Realtime DB</div></div>
+    <div class="skill-row"><div class="skill-key">eCommerce &amp; CMS</div><div>Shopify, WordPress, WooCommerce</div></div>
+    <div class="skill-row"><div class="skill-key">Cloud &amp; Hosting</div><div>AWS, Google Cloud, cPanel, Cloudflare, SSL/TLS, FTP, VPS</div></div>
+    <div class="skill-row"><div class="skill-key">Tools &amp; DevOps</div><div>Git, GitLab, GitHub, Postman, Figma, Docker (basic), CI/CD Pipelines</div></div>
+    <div class="skill-row"><div class="skill-key">Architecture &amp; Other</div><div>RESTful APIs, MVC Architecture, Agile/Scrum, Code Optimization, Web Security</div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Education</h2>
+  <div class="entry-head">
+    <div class="entry-title">Bachelor of Science in Computer Science (BSCS)</div>
+    <div class="entry-meta">Nov 2019 — Nov 2023</div>
+  </div>
+  <div class="entry-sub">National College of Business Administration &amp; Economics · Multan, Pakistan</div>
+</section>
+
+<section>
+  <h2>Languages &amp; Interests</h2>
+  <div class="row"><div class="row-key">Languages</div><div>English (Professional Fluency) · Urdu (Native)</div></div>
+  <div class="row"><div class="row-key">Interests</div><div>Cloud Architecture, Open-Source Laravel Packages, Game UI Design, Tech Blogging, Problem Solving &amp; Algorithms</div></div>
+</section>
+
+</body>
+</html>
