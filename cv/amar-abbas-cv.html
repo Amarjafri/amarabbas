@@ -20,12 +20,16 @@
   @page { size: A4; margin: 11mm 13mm 10mm; }
 
   :root {
-    --accent: #b0602a;
-    --ink:    #1c1f23;
-    --ink-2:  #3f464d;
-    --ink-3:  #6b737b;
-    --rule:   #d9dce0;
-    --rule-2: #ebedef;
+    /* The palette the original CV used: deep navy for structure, a mid blue
+       for names, plain greys for text. Reads as conventional on paper, which
+       is what a CV wants - the site's orange is for the site. */
+    --accent:   #1f3a5f;
+    --accent-2: #2e5f8a;
+    --ink:      #1a1a1a;
+    --ink-2:    #333333;
+    --ink-3:    #555555;
+    --rule:     #c9d2dc;
+    --rule-2:   #e8ecf0;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -46,14 +50,14 @@
     font-weight: 600;
     line-height: 1.04;
     letter-spacing: -.015em;
-    color: var(--ink);
+    color: var(--accent);
   }
 
   .role {
     font-family: 'Newsreader', Georgia, serif;
     font-size: 10pt;
     font-style: italic;
-    color: var(--accent);
+    color: var(--accent-2);
     margin-top: 2pt;
   }
 
@@ -69,6 +73,7 @@
   .sep { color: var(--rule); padding: 0 4pt; }
 
   header {
+    text-align: center;
     border-bottom: 1.6pt solid var(--accent);
     padding-bottom: 7pt;
     margin-bottom: 9pt;
@@ -110,7 +115,7 @@
     font-weight: 600;
     color: var(--ink);
   }
-  .entry-title .at { color: var(--accent); font-weight: 600; }
+  .entry-title .at { color: var(--accent-2); font-weight: 600; }
 
   .entry-meta {
     font-family: 'JetBrains Mono', monospace;
