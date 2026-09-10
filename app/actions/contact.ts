@@ -3,6 +3,8 @@
 import { Resend } from 'resend'
 
 import { setting } from '@/lib/data'
+import { readRows, writeCollection } from '@/lib/store'
+import type { Enquiry } from '@/lib/types'
 
 export interface ContactState {
   status: 'idle' | 'success' | 'error'
@@ -81,6 +83,46 @@ function fallbackContactMessage(): string {
   return parts.join(' ') + '.'
 }
 
+/**
+ * Append the enquiry to data/enquiries.json.
+ *
+ * In production a write is a GitHub commit, which is a read-modify-write: two
+ * submissions landing together make the second one's sha stale and GitHub
+ * answers 409. Re-read and try again rather than dropping the enquiry — the
+ * admin panel deliberately does not retry, because there a conflict means the
+ * operator's own form data is stale and overwriting would lose someone's edit.
+ */
+async function storeEnquiry(
+  values: Record<string, string>,
+  emailed: boolean
+): Promise<boolean> {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const rows = await readRows<Enquiry>('enquiries')
+
+      const enquiry: Enquiry = {
+        id: rows.reduce((max, row) => Math.max(max, row.id), 0) + 1,
+        name: values.name,
+        email: values.email,
+        phone: values.phone,
+        project_type: values.project_type,
+        message: values.message,
+        read: false,
+        emailed,
+        created_at: new Date().toISOString(),
+      }
+
+      await writeCollection('enquiries', [...rows, enquiry], `Enquiry from ${values.name}`)
+      return true
+    } catch {
+      // Fall through and retry; the last failure returns false so the caller
+      // can decide whether the visitor still has a route to reach him.
+    }
+  }
+
+  return false
+}
+
 function escapeHtml(value: string): string {
   return value
     .replace(/&/g, '&amp;')
@@ -127,12 +169,24 @@ export async function sendContactMessage(
     }
   }
 
+  const emailed = await sendNotification(values)
+  const stored = await storeEnquiry(values, emailed)
+
+  // The enquiry is only lost if both routes failed. If either worked he has it,
+  // so tell the visitor it arrived rather than sending them away.
+  if (!emailed && !stored) {
+    return { status: 'error', message: fallbackContactMessage(), values }
+  }
+
+  return { status: 'success' }
+}
+
+/** Returns whether the notification email actually went out. */
+async function sendNotification(values: Record<string, string>): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY
   const to = process.env.CONTACT_TO_EMAIL || setting('email')
 
-  if (!apiKey || !to) {
-    return { status: 'error', message: fallbackContactMessage(), values }
-  }
+  if (!apiKey || !to) return false
 
   try {
     const resend = new Resend(apiKey)
@@ -155,12 +209,8 @@ export async function sendContactMessage(
       `,
     })
 
-    if (error) {
-      return { status: 'error', message: fallbackContactMessage(), values }
-    }
-
-    return { status: 'success' }
+    return !error
   } catch {
-    return { status: 'error', message: fallbackContactMessage(), values }
+    return false
   }
 }

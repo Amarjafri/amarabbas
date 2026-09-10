@@ -48,6 +48,11 @@ export default async function AdminPanelLayout({ children }: { children: React.R
                   <i className="fas fa-chart-simple nav-icon" aria-hidden="true"></i> Dashboard
                 </AdminSidebarLink>
               </li>
+              <li>
+                <AdminSidebarLink href="/admin/enquiries">
+                  <i className="fas fa-inbox nav-icon" aria-hidden="true"></i> Enquiries
+                </AdminSidebarLink>
+              </li>
             </ul>
 
             <div className="nav-section">Content</div>

@@ -8,6 +8,7 @@ import { readObject, readRows, StoreError, writeCollection } from '@/lib/store'
 import type {
   BlogPost,
   CollectionName,
+  Enquiry,
   Project,
   Settings,
   Testimonial,
@@ -532,4 +533,42 @@ export async function toggleContentItem(formData: FormData): Promise<void> {
 /** Used by the list screens so they never read a stale bundle. */
 export async function loadRows<T>(collection: CollectionName): Promise<T[]> {
   return readRows<T>(collection)
+}
+
+// ── Enquiries ──────────────────────────────────────────────────────────────
+
+/**
+ * Enquiries are written by the public contact form, never by this panel, so
+ * these two only ever mark one read or remove it. There is no create or edit.
+ */
+export async function toggleEnquiryRead(formData: FormData): Promise<void> {
+  const id = int(formData, 'id', 0)
+  const rows = await readRows<Enquiry>('enquiries')
+  const row = rows.find((entry) => entry.id === id)
+
+  if (row) {
+    await writeCollection(
+      'enquiries',
+      rows.map((entry) => (entry.id === id ? { ...entry, read: !entry.read } : entry)),
+      `Mark enquiry ${row.read ? 'unread' : 'read'}: ${row.name}`
+    )
+  }
+
+  redirect('/admin/enquiries?saved=' + (row?.read ? 'unread' : 'read'))
+}
+
+export async function deleteEnquiry(formData: FormData): Promise<void> {
+  const id = int(formData, 'id', 0)
+  const rows = await readRows<Enquiry>('enquiries')
+  const row = rows.find((entry) => entry.id === id)
+
+  if (row) {
+    await writeCollection(
+      'enquiries',
+      rows.filter((entry) => entry.id !== id),
+      `Delete enquiry: ${row.name}`
+    )
+  }
+
+  redirect('/admin/enquiries?saved=deleted')
 }

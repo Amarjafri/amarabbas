@@ -5,6 +5,8 @@ const MESSAGES: Record<string, string> = {
   updated: 'Updated.',
   deleted: 'Deleted.',
   toggled: 'Visibility updated.',
+  read: 'Marked as read.',
+  unread: 'Marked as unread.',
   'cv-removed': 'CV removed — the download button is now hidden.',
 }
 

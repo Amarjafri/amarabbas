@@ -145,6 +145,26 @@ export interface SocialLink {
   updated_at: string
 }
 
+/**
+ * A contact form submission.
+ *
+ * The form's only delivery route was Resend, so a missing or rejected API key
+ * lost the enquiry outright. These are written on submit as well, independently
+ * of the email, and `emailed` records whether the notification actually went —
+ * false means the panel holds the only copy.
+ */
+export interface Enquiry {
+  id: number
+  name: string
+  email: string
+  phone: string
+  project_type: string
+  message: string
+  read: boolean
+  emailed: boolean
+  created_at: string
+}
+
 /** settings is a key/value table, exported as one flat object of strings. */
 export type Settings = Record<string, string>
 
@@ -160,4 +180,5 @@ export type CollectionName =
   | 'hero_stats'
   | 'nav_links'
   | 'social_links'
+  | 'enquiries'
   | 'settings'
