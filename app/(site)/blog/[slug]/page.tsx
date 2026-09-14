@@ -125,7 +125,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             {/* ── SIDEBAR ── */}
             <aside className="bp-sidebar">
               <div className="bp-widget">
-                <h4>Share Article</h4>
+                <h2>Share Article</h2>
                 <div className="bp-widget-stack">
                   <a
                     href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
@@ -148,24 +148,22 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               </div>
 
               <div className="bp-widget">
-                <h4>About the Author</h4>
+                <h2>About the Author</h2>
                 <div className="bp-author-card">
                   <div className="bp-author-avatar" aria-hidden="true">
                     AA
                   </div>
                   <strong>Amar Abbas</strong>
-                  <p>
-                    Senior Full-Stack Developer with 3+ years experience in Laravel &amp; Vue.js.
-                  </p>
+                  <p>{setting('author_bio')}</p>
                   <Link href="/#contact" className="btn-primary">
-                    Hire Me →
+                    Let&apos;s Talk →
                   </Link>
                 </div>
               </div>
 
               {related.length > 0 && (
                 <div className="bp-widget">
-                  <h4>Related Articles</h4>
+                  <h2>Related Articles</h2>
                   {related.map((r) => (
                     <Link href={`/blog/${r.slug}`} className="related-post" key={r.id}>
                       {r.image ? (
@@ -178,7 +176,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                         />
                       ) : (
                         <div className="rp-placeholder" aria-hidden="true">
-                          ✍
+                          {r.category.substring(0, 1)}
                         </div>
                       )}
                       <div>

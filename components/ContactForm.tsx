@@ -128,6 +128,7 @@ function SubmitButton({ label }: { label: string }) {
   return (
     <button type="submit" className="btn-primary form-btn" disabled={pending}>
       {pending ? 'Sending…' : label}
+      {!pending && <span className="arrow" aria-hidden="true">→</span>}
     </button>
   )
 }

@@ -49,7 +49,7 @@ export default function BlogPage() {
                   />
                 ) : (
                   <div className="bf-img-placeholder">
-                    <span>✍️</span>
+                    <span>{featuredPost.category}</span>
                   </div>
                 )}
               </div>
@@ -106,7 +106,7 @@ export default function BlogPage() {
                     />
                   ) : (
                     <div className="bfc-img-placeholder">
-                      <span>✍️</span>
+                      <span>{post.category}</span>
                     </div>
                   )}
                   <span className="blog-category-tag">{post.category}</span>

@@ -130,7 +130,11 @@ lib/
   content-types.ts     the schema behind every "Site Content" screen
   settings-schema.ts   the tabs and fields of the Settings screen
   format.ts            Carbon date formats
-app/(site)/            the public site — its own root layout and globals.css
+app/(site)/            the public site — its own root layout and styles/
+  styles/base.css      tokens (dark default + light), nav, footer, background glow,
+                       buttons, reveal/tilt motion
+  styles/home.css      homepage sections
+  styles/pages.css     projects, case study, blog, article, 404
 app/(admin)/           the admin panel — its own root layout and admin.css
 app/actions/           server actions (auth, contact, admin CRUD)
 components/            shared React components
@@ -138,7 +142,7 @@ public/storage/        images copied out of Laravel's storage disk
 middleware.ts          the /admin gate
 ```
 
-The site and admin are **separate root layouts** on purpose: `globals.css` and
+The site and admin are **separate root layouts** on purpose: the `styles/` sheets and
 `admin.css` each define their own `:root` tokens, reset and `body` rules, and
 would fight if both loaded on the same page.
 

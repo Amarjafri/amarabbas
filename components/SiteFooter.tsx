@@ -31,7 +31,7 @@ export default function SiteFooter() {
 
         {footerLinks.length > 0 && (
           <div className="footer-links">
-            <h4>{setting('footer_nav_title')}</h4>
+            <h2>{setting('footer_nav_title')}</h2>
             <ul>
               {footerLinks.map((link) => (
                 <li key={link.id}>
@@ -44,7 +44,7 @@ export default function SiteFooter() {
 
         {footerSocial.length > 0 && (
           <div className="footer-links">
-            <h4>{setting('footer_connect_title')}</h4>
+            <h2>{setting('footer_connect_title')}</h2>
             <ul>
               {footerSocial.map((link) => (
                 <li key={link.id}>
@@ -63,7 +63,7 @@ export default function SiteFooter() {
         )}
 
         <div className="footer-contact">
-          <h4>{setting('footer_location_title')}</h4>
+          <h2>{setting('footer_location_title')}</h2>
           <p>{setting('location')}</p>
           <p>{setting('footer_availability')}</p>
 

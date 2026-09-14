@@ -28,7 +28,7 @@ export async function generateMetadata({
   if (!project) return { title: 'Project not found — Amar Abbas' }
 
   const title = `${project.title} — Amar Abbas`
-  const description = project.impact || project.description.slice(0, 160)
+  const description = project.summary || project.impact || project.description.slice(0, 160)
 
   return {
     title,
@@ -82,6 +82,7 @@ export default async function ProjectDetailPage({
               <span className="pd-category">{project.category}</span>
               <h1 className="pd-title">{project.title}</h1>
               <p className="pd-type">{project.project_type}</p>
+              {project.summary && <p className="pd-summary">{project.summary}</p>}
 
               {project.impact && <p className="proj-impact">{project.impact}</p>}
 
@@ -107,7 +108,7 @@ export default async function ProjectDetailPage({
 
               {/* DESCRIPTION */}
               <div className="pd-description">
-                <h3>Project Overview</h3>
+                <h2>Project Overview</h2>
                 <div
                   className="pd-body"
                   dangerouslySetInnerHTML={{ __html: nl2brEscaped(project.description) }}
@@ -116,7 +117,7 @@ export default async function ProjectDetailPage({
 
               {project.challenges && (
                 <div className="pd-description">
-                  <h3>Challenges &amp; Solutions</h3>
+                  <h2>Challenges &amp; Solutions</h2>
                   <div
                     className="pd-body"
                     dangerouslySetInnerHTML={{ __html: nl2brEscaped(project.challenges) }}
@@ -128,7 +129,7 @@ export default async function ProjectDetailPage({
             {/* RIGHT: SIDEBAR */}
             <div className="pd-sidebar">
               <div className="pd-info-card">
-                <h4>Project Details</h4>
+                <h2>Project Details</h2>
                 <div className="pd-info-row">
                   <span>Client</span>
                   <strong>{project.client_name ?? 'Confidential'}</strong>
@@ -141,6 +142,12 @@ export default async function ProjectDetailPage({
                   <span>Category</span>
                   <strong>{project.category}</strong>
                 </div>
+                {project.role && (
+                  <div className="pd-info-row">
+                    <span>Role</span>
+                    <strong>{splitCommas(project.role).join(', ')}</strong>
+                  </div>
+                )}
                 <div className="pd-info-row">
                   <span>Status</span>
                   <strong className={`status-${status}`}>
@@ -150,7 +157,7 @@ export default async function ProjectDetailPage({
               </div>
 
               <div className="pd-info-card">
-                <h4>Tech Stack</h4>
+                <h2>Tech Stack</h2>
                 <div className="pd-tech-pills">
                   {splitCommas(project.tech_stack).map((tech, index) => (
                     <span className="pd-tech-pill" key={index}>
@@ -191,7 +198,7 @@ export default async function ProjectDetailPage({
           {/* RELATED PROJECTS */}
           {related.length > 0 && (
             <div className="related-section">
-              <h3 className="related-title">More Projects</h3>
+              <h2 className="related-title">More Projects</h2>
               <div className="related-grid">
                 {related.map((r) => (
                   <Link href={`/projects/${r.slug}`} className="related-card" key={r.id}>

@@ -1,9 +1,13 @@
+import { readFileSync } from 'fs'
+import path from 'path'
+
+import type { CSSProperties } from 'react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 
 import ContactForm from '@/components/ContactForm'
-import { formatDate } from "@/lib/format"
+import { formatDate } from '@/lib/format'
 import {
   getExperiences,
   getFeaturedProjects,
@@ -25,12 +29,171 @@ import {
   storageUrl,
   strLimit,
 } from '@/lib/data'
+import type { Project } from '@/lib/types'
 
 export const metadata: Metadata = {
   title: setting('home_title'),
 }
 
-/** Ported from resources/views/home/index.blade.php, section for section. */
+/** Stagger for .reveal elements, read by base.css as --d. */
+function delay(ms: number): CSSProperties {
+  return { '--d': `${ms}ms` } as CSSProperties
+}
+
+function pad(n: number) {
+  return String(n).padStart(2, '0')
+}
+
+function siteHost(url: string | null) {
+  if (!url) return 'private project'
+  try {
+    return new URL(url).host.replace(/^www\./, '')
+  } catch {
+    return url
+  }
+}
+
+/**
+ * Width ÷ height of an uploaded image, read from its PNG/JPEG header. The page
+ * is prerendered, so this runs at build time only. Remote (Blob) images return
+ * null and are shown as-is.
+ */
+function imageRatio(src: string): number | null {
+  if (!src.startsWith('/storage/') && !src.startsWith('/uploads/')) return null
+
+  try {
+    const buf = readFileSync(path.join(process.cwd(), 'public', src))
+
+    if (buf[0] === 0x89) return buf.readUInt32BE(16) / buf.readUInt32BE(20)
+
+    for (let i = 2; i < buf.length - 9; ) {
+      if (buf[i] !== 0xff) {
+        i++
+        continue
+      }
+      const marker = buf[i + 1]
+      if (marker >= 0xc0 && marker <= 0xc3) return buf.readUInt16BE(i + 7) / buf.readUInt16BE(i + 5)
+      i += 2 + buf.readUInt16BE(i + 2)
+    }
+  } catch {
+    // Missing or unreadable file — fall through to the stored image as-is.
+  }
+
+  return null
+}
+
+/**
+ * A very wide capture turns into a blurry zoom inside a 16:10 frame. Prefer the
+ * project's first normally proportioned gallery screenshot in that case.
+ */
+function frameImage(project: Project): string | null {
+  if (!project.image) return null
+
+  const main = storageUrl(project.image)
+  const ratio = imageRatio(main)
+  if (ratio === null || ratio <= 2.4) return main
+
+  const alternative = (project.gallery ?? [])
+    .map(storageUrl)
+    .find((src) => {
+      const r = imageRatio(src)
+      return r !== null && r >= 1.2 && r <= 2.4
+    })
+
+  return alternative ?? main
+}
+
+function WorkCard({ project, index }: { project: Project; index: number }) {
+  const href = `/projects/${project.slug}`
+  const stack = splitCommas(project.tech_stack)
+  const shown = stack.slice(0, 5)
+  const roles = splitCommas(project.role)
+  const image = frameImage(project)
+
+  return (
+    <article className="work-card reveal" style={delay((index % 2) * 120)}>
+      <div className="work-card-inner glass glow-border">
+        <Link href={href} className="work-shot" tabIndex={-1} aria-hidden="true">
+          <span className="browser-bar">
+            <span className="browser-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span className="browser-url">{siteHost(project.live_url)}</span>
+          </span>
+          <span className="work-shot-img">
+            {image ? (
+              <Image
+                src={image}
+                alt=""
+                width={1600}
+                height={1000}
+                sizes="(max-width: 900px) 100vw, 600px"
+                loading="lazy"
+              />
+            ) : (
+              <span className="proj-img-placeholder">{project.title.substring(0, 2)}</span>
+            )}
+          </span>
+          <span className="work-shot-overlay">
+            <span className="work-shot-cta">View case study →</span>
+          </span>
+        </Link>
+
+        <div className="work-card-body">
+          <p className="work-card-top">
+            <span className="work-num">{pad(index + 1)}</span>
+            <span className="work-cat">{project.category}</span>
+            {project.year && <span className="work-year">{project.year}</span>}
+          </p>
+
+          <h3 className="work-title">
+            <Link href={href}>{project.title}</Link>
+          </h3>
+
+          <p className="work-desc">{project.summary || strLimit(project.description, 200)}</p>
+
+          <ul className="work-stack" aria-label="Tech stack">
+            {shown.map((tech) => (
+              <li key={tech}>{tech}</li>
+            ))}
+            {stack.length > shown.length && (
+              <li className="work-stack-more">+{stack.length - shown.length}</li>
+            )}
+          </ul>
+
+          {roles.length > 0 && (
+            <p className="work-role">
+              <span>Role</span>
+              {roles.join(' · ')}
+            </p>
+          )}
+
+          {/* Only ever a real, verifiable outcome — set in the admin panel. */}
+          {project.impact && <p className="proj-impact">{project.impact}</p>}
+
+          <div className="work-links">
+            <Link href={href} className="btn-primary btn-sm">
+              View Project <span className="arrow" aria-hidden="true">→</span>
+            </Link>
+            {project.live_url && (
+              <a
+                href={project.live_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-ghost btn-sm link-quiet"
+              >
+                Live Site <span className="arrow" aria-hidden="true">↗</span>
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </article>
+  )
+}
+
 export default function HomePage() {
   const profile = getProfile()
   const heroStats = getHeroStats()
@@ -42,6 +205,13 @@ export default function HomePage() {
   const testimonials = getTestimonials()
   const latestPosts = getLatestPosts()
   const contactLinks = getSocialLinks().filter((link) => link.in_contact)
+  const typingWords = settingLines('hero_rotate_words')
+
+  // Floating chips around the photo — the core stack, taken from Tech Stack.
+  const chipLabels = ['Laravel', 'MySQL', 'REST APIs']
+  const chips = chipLabels
+    .map((label) => techItems.find((tech) => tech.label === label))
+    .filter((tech): tech is NonNullable<typeof tech> => Boolean(tech))
 
   // Uploaded files carry a timestamp in their name — hand the visitor a clean one.
   const cvFile = setting('cv_file')
@@ -56,33 +226,51 @@ export default function HomePage() {
           <div className="hero-inner">
             <div className="hero-content">
               {settingOn('hero_badge_show') && setting('hero_badge_text') && (
-                <span className="hero-badge">
-                  <span className="badge-dot"></span>
+                <span className="hero-badge reveal" style={delay(0)}>
+                  <span className="badge-dot" aria-hidden="true"></span>
                   {setting('hero_badge_text')}
                 </span>
               )}
 
               {setting('hero_eyebrow') && (
-                <span className="hero-eyebrow">{setting('hero_eyebrow')}</span>
+                <span className="hero-eyebrow reveal" style={delay(80)}>
+                  {setting('hero_eyebrow')}
+                </span>
               )}
 
               <h1
-                className="hero-title"
+                className="hero-title reveal"
+                style={delay(160)}
                 dangerouslySetInnerHTML={{ __html: setting('hero_title') }}
               />
 
-              <p className="hero-desc" dangerouslySetInnerHTML={{ __html: setting('hero_desc') }} />
+              {typingWords.length > 0 && (
+                <p className="hero-typing reveal" style={delay(240)}>
+                  <span className="type-prefix">Building</span>{' '}
+                  <span className="type-words" data-words={JSON.stringify(typingWords)} aria-hidden="true">
+                    <span className="type-text">{typingWords[0]}</span>
+                    <span className="type-caret"></span>
+                  </span>
+                  <span className="sr-only">{typingWords.join(', ')}</span>
+                </p>
+              )}
 
-              <div className="hero-actions">
+              <p
+                className="hero-desc reveal"
+                style={delay(320)}
+                dangerouslySetInnerHTML={{ __html: setting('hero_desc') }}
+              />
+
+              <div className="hero-actions reveal" style={delay(400)}>
                 {setting('hero_btn1_label') && (
-                  <Link href="/projects" className="btn-primary">
-                    {setting('hero_btn1_label')}
-                  </Link>
+                  <a href="#projects-home" className="btn-primary">
+                    {setting('hero_btn1_label')} <span className="arrow" aria-hidden="true">→</span>
+                  </a>
                 )}
 
                 {setting('hero_btn2_label') && cvFile && (
                   <a href={fileUrl(cvFile)} download={cvAs} className="btn-ghost">
-                    {setting('hero_btn2_label')}
+                    {setting('hero_btn2_label')} <span aria-hidden="true">↓</span>
                   </a>
                 )}
 
@@ -94,10 +282,10 @@ export default function HomePage() {
               </div>
 
               {settingOn('hero_stats_show') && heroStats.length > 0 && (
-                <div className="hero-stats">
+                <div className="hero-stats reveal" style={delay(480)}>
                   {heroStats.map((stat) => (
-                    <div className="stat" key={stat.id}>
-                      <span className="stat-n">{stat.number}</span>
+                    <div className="stat glass" key={stat.id}>
+                      <span className="stat-n gradient-text">{stat.number}</span>
                       <span className="stat-l">{stat.label}</span>
                     </div>
                   ))}
@@ -105,31 +293,57 @@ export default function HomePage() {
               )}
             </div>
 
-            <div className="hero-photo-wrap">
-              <div className="photo-frame">
-                {profile.profileImage ? (
-                  <Image
-                    src={storageUrl(profile.profileImage)}
-                    alt={profile.name}
-                    className="profile-photo"
-                    width={380}
-                    height={475}
-                    priority
-                  />
-                ) : (
-                  <div className="photo-placeholder">
-                    <span>{setting('initials')}</span>
-                    <p>
-                      Upload your photo
-                      <br />
-                      in the admin panel
-                    </p>
-                  </div>
-                )}
+            <div className="hero-visual reveal reveal-zoom" style={delay(220)}>
+              <div className="photo-ring">
+                <div className="photo-frame">
+                  {profile.profileImage ? (
+                    <Image
+                      src={storageUrl(profile.profileImage)}
+                      alt={profile.name}
+                      className="profile-photo"
+                      width={380}
+                      height={475}
+                      priority
+                    />
+                  ) : (
+                    <div className="photo-placeholder">
+                      <span>{setting('initials')}</span>
+                    </div>
+                  )}
+                </div>
               </div>
+
+              {chips.map((tech, index) => (
+                <span className={`float-chip chip-${index + 1}`} key={tech.id} aria-hidden="true">
+                  <i className={tech.icon}></i>
+                  {tech.label}
+                </span>
+              ))}
             </div>
           </div>
+
+          <a href="#about" className="scroll-cue" aria-label="Scroll to About">
+            <span></span>
+          </a>
         </section>
+      )}
+
+      {/* ═══════════════════════════════ TECH MARQUEE ═══════════════════════════════ */}
+      {techItems.length > 0 && (
+        <div className="tech-marquee" role="region" aria-label="Technologies I work with">
+          <div className="marquee-track">
+            {[0, 1].map((copy) => (
+              <ul className="marquee-group" aria-hidden={copy === 1 ? true : undefined} key={copy}>
+                {techItems.map((tech) => (
+                  <li key={tech.id}>
+                    <i className={tech.icon} aria-hidden="true"></i>
+                    {tech.label}
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* ═══════════════════════════════ ABOUT ═══════════════════════════════ */}
@@ -137,7 +351,7 @@ export default function HomePage() {
         <section className="about section-pad" id="about">
           <div className="container">
             <div className="about-grid">
-              <div className="about-left reveal">
+              <div className="about-left reveal reveal-left">
                 <div className="section-tag">{setting('about_tag')}</div>
                 <h2
                   className="section-title"
@@ -169,14 +383,14 @@ export default function HomePage() {
 
                 {setting('about_btn_label') && (
                   <a href="#contact" className="btn-primary">
-                    {setting('about_btn_label')}
+                    {setting('about_btn_label')} <span className="arrow" aria-hidden="true">→</span>
                   </a>
                 )}
               </div>
 
-              <div className="about-right reveal">
+              <div className="about-right reveal reveal-right" style={delay(150)}>
                 {techItems.length > 0 && (
-                  <div className="tech-card">
+                  <div className="tech-card glass glow-border">
                     <div className="tech-card-header">
                       <span className="tc-dot tc-red"></span>
                       <span className="tc-dot tc-yellow"></span>
@@ -200,8 +414,8 @@ export default function HomePage() {
                 {heroStats.length > 0 && (
                   <div className="exp-summary-cards">
                     {heroStats.map((stat) => (
-                      <div className="esc-item" key={stat.id}>
-                        <span className="esc-n">{stat.number}</span>
+                      <div className="esc-item glass" key={stat.id}>
+                        <span className="esc-n gradient-text">{stat.number}</span>
                         <span className="esc-l">{stat.short_label || stat.label}</span>
                       </div>
                     ))}
@@ -223,138 +437,87 @@ export default function HomePage() {
               <p className="section-sub">{setting('exp_sub')}</p>
             </div>
 
-            <div className="timeline">
-              {experiences.map((exp) => {
+            <ol className="timeline">
+              {experiences.map((exp, index) => {
                 const bullets = splitLines(exp.bullets)
                 const tags = splitCommas(exp.tags)
+                const side = index % 2 === 0 ? 'left' : 'right'
 
                 return (
-                  <div
-                    className={`tl-item ${exp.is_current ? 'tl-current' : ''} reveal`}
+                  <li
+                    className={`tl-item tl-${side}${exp.is_current ? ' is-current' : ''} reveal reveal-${side}`}
                     key={exp.id}
                   >
-                    <div className="tl-when">
-                      <span className="tl-period">{exp.period}</span>
-                      {exp.duration && <span className="tl-duration">{exp.duration}</span>}
-                    </div>
+                    <span className="tl-node" aria-hidden="true"></span>
 
-                    <div className="tl-rail" aria-hidden="true">
-                      <span className="tl-node"></span>
-                    </div>
+                    <article className="tl-card glass glow-border">
+                      <div className="tl-top">
+                        <span className="tl-period">{exp.period}</span>
+                        {exp.is_current ? (
+                          <span className="tl-now">
+                            <span className="badge-dot" aria-hidden="true"></span>
+                            Current
+                          </span>
+                        ) : (
+                          exp.duration && <span className="tl-duration">{exp.duration}</span>
+                        )}
+                      </div>
 
-                    <div className="tl-body">
                       <h3 className="tl-role">{exp.title}</h3>
-                      <span className="tl-company">{exp.company}</span>
-                      {exp.is_current && <span className="tl-now">Current</span>}
+                      <p className="tl-company">{exp.company}</p>
 
                       {exp.location && (
-                        <span className="tl-location">
+                        <p className="tl-location">
                           <i className="fas fa-location-dot" aria-hidden="true"></i> {exp.location}
-                        </span>
+                        </p>
                       )}
 
                       {bullets.length > 0 && (
                         <ul className="tl-bullets">
-                          {bullets.map((bullet, index) => (
-                            <li key={index}>{bullet}</li>
+                          {bullets.map((bullet, i) => (
+                            <li key={i}>{bullet}</li>
                           ))}
                         </ul>
                       )}
 
                       {tags.length > 0 && (
                         <div className="tl-tags">
-                          {tags.map((tag, index) => (
-                            <span className="tl-tag" key={index}>
+                          {tags.map((tag) => (
+                            <span className="tl-tag" key={tag}>
                               {tag}
                             </span>
                           ))}
                         </div>
                       )}
-                    </div>
-                  </div>
+                    </article>
+                  </li>
                 )
               })}
-            </div>
+            </ol>
           </div>
         </section>
       )}
 
-      {/* ═══════════════════════════════ FEATURED PROJECTS ═══════════════════════════════ */}
+      {/* ═══════════════════════════════ SELECTED WORK ═══════════════════════════════ */}
       {settingOn('projects_show') && featuredProjects.length > 0 && (
         <section className="projects-home section-pad" id="projects-home">
           <div className="container">
             <div className="section-head reveal">
               <div className="section-tag">{setting('projects_tag')}</div>
               <h2 className="section-title">{setting('projects_title')}</h2>
-              <p className="section-sub">{setting('projects_sub')}</p>
+              {setting('projects_sub') && <p className="section-sub">{setting('projects_sub')}</p>}
             </div>
 
-            <div className="proj-grid-home">
+            <div className="work-list">
               {featuredProjects.map((project, index) => (
-                <article
-                  className={`proj-card-home ${index === 0 ? 'is-featured' : ''} reveal`}
-                  key={project.id}
-                >
-                  <div className="proj-img-wrap">
-                    {project.image ? (
-                      <Image
-                        src={storageUrl(project.image)}
-                        alt={project.title}
-                        className="proj-img"
-                        width={800}
-                        height={500}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="proj-img-placeholder">
-                        <span>{project.title.substring(0, 2)}</span>
-                      </div>
-                    )}
-
-                    <div className="proj-overlay">
-                      <Link href={`/projects/${project.slug}`} className="proj-view-btn">
-                        View Project →
-                      </Link>
-                      {project.live_url && (
-                        <a
-                          href={project.live_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="proj-live-btn"
-                        >
-                          Live ↗
-                        </a>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="proj-info">
-                    <span className="proj-category">{project.category}</span>
-                    <h3 className="proj-title-card">{project.title}</h3>
-                    <p className="proj-excerpt">
-                      {strLimit(project.description, index === 0 ? 180 : 100)}
-                    </p>
-
-                    {/* One measurable outcome per project. Fill "Impact" in the admin
-                        panel — this is what turns a screenshot grid into a case-study grid. */}
-                    {project.impact && <p className="proj-impact">{project.impact}</p>}
-
-                    <div className="proj-tech-list">
-                      {splitCommas(project.tech_stack)
-                        .slice(0, 5)
-                        .map((tech, techIndex) => (
-                          <span key={techIndex}>{tech}</span>
-                        ))}
-                    </div>
-                  </div>
-                </article>
+                <WorkCard project={project} index={index} key={project.id} />
               ))}
             </div>
 
             {setting('projects_btn') && (
               <div className="section-cta reveal">
-                <Link href="/projects" className="btn-outline">
-                  {setting('projects_btn')}
+                <Link href="/projects" className="btn-ghost">
+                  {setting('projects_btn')} <span className="arrow" aria-hidden="true">→</span>
                 </Link>
               </div>
             )}
@@ -372,24 +535,31 @@ export default function HomePage() {
               <p className="section-sub">{setting('skills_sub')}</p>
             </div>
 
-            {/* Grid, not tabs: recruiters skim and Ctrl-F. Tabs would hide five of six
-                categories behind a click and cost you keyword matches. */}
             <div className="skills-grid">
-              {skillGroups.map((group) => (
-                <div className="skill-card reveal" key={group.id}>
-                  <div className="skill-icon">
-                    <i className={group.icon} aria-hidden="true"></i>
+              {skillGroups.map((group, index) => {
+                const skills = splitCommas(group.skills)
+
+                return (
+                  <div className="skill-wrap reveal" style={delay(index * 120)} key={group.id}>
+                    <div className={`skill-card glass glow-border${index === 0 ? ' is-core' : ''}`}>
+                      <div className="skill-head">
+                        <span className="skill-icon">
+                          <i className={group.icon} aria-hidden="true"></i>
+                        </span>
+                        <h3 className="skill-group-title">{group.title}</h3>
+                        <span className="skill-count">{skills.length} skills</span>
+                      </div>
+                      <ul className="skill-list">
+                        {skills.map((skill) => (
+                          <li className="skill-pill" key={skill}>
+                            {skill}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
-                  <h3 className="skill-group-title">{group.title}</h3>
-                  <div className="skill-pills">
-                    {splitCommas(group.skills).map((skill, index) => (
-                      <span className="skill-pill" key={index}>
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         </section>
@@ -415,20 +585,6 @@ export default function HomePage() {
                   </div>
                   <blockquote className="testi-text">{t.message}</blockquote>
                   <figcaption className="testi-author">
-                    {t.avatar ? (
-                      <Image
-                        src={storageUrl(t.avatar)}
-                        alt=""
-                        className="testi-avatar"
-                        width={96}
-                        height={96}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="testi-avatar-placeholder" aria-hidden="true">
-                        {t.name.substring(0, 1)}
-                      </div>
-                    )}
                     <div>
                       <strong>{t.name}</strong>
                       <small>
@@ -453,11 +609,14 @@ export default function HomePage() {
               <p className="section-sub">{setting('blog_sub')}</p>
             </div>
 
-            {/* A hairline list, not a card grid. Three cards look like an empty shelf;
-                three rows look like a deliberate index. */}
-            <div className="blog-list reveal">
-              {latestPosts.map((post) => (
-                <Link href={`/blog/${post.slug}`} className="blog-row" key={post.id}>
+            <div className="blog-list">
+              {latestPosts.map((post, index) => (
+                <Link
+                  href={`/blog/${post.slug}`}
+                  className="blog-row reveal"
+                  style={delay(index * 100)}
+                  key={post.id}
+                >
                   <span className="blog-row-date">{formatDate(post.created_at, 'd M Y')}</span>
 
                   <span className="blog-row-main">
@@ -465,15 +624,17 @@ export default function HomePage() {
                     <span className="blog-row-excerpt">{strLimit(post.excerpt, 120)}</span>
                   </span>
 
-                  <span className="blog-row-meta">{post.read_time ?? 5} min read →</span>
+                  <span className="blog-row-meta">
+                    {post.read_time ?? 5} min read <span className="arrow" aria-hidden="true">→</span>
+                  </span>
                 </Link>
               ))}
             </div>
 
             {setting('blog_btn') && (
               <div className="section-cta reveal">
-                <Link href="/blog" className="btn-outline">
-                  {setting('blog_btn')}
+                <Link href="/blog" className="btn-ghost">
+                  {setting('blog_btn')} <span className="arrow" aria-hidden="true">→</span>
                 </Link>
               </div>
             )}
@@ -485,45 +646,49 @@ export default function HomePage() {
       {settingOn('contact_show') && (
         <section className="contact section-pad" id="contact">
           <div className="container">
-            <div className="contact-grid">
-              <div className="contact-info reveal">
-                <div className="section-tag">{setting('contact_tag')}</div>
-                <h2
-                  className="section-title"
-                  dangerouslySetInnerHTML={{ __html: setting('contact_title') }}
-                />
-                <p>{setting('contact_text')}</p>
+            <div className="contact-panel glow-border reveal reveal-zoom">
+              <span className="contact-orb" aria-hidden="true"></span>
 
-                {contactLinks.length > 0 && (
-                  <div className="contact-items">
-                    {contactLinks.map((link) => (
-                      <a
-                        key={link.id}
-                        href={link.url}
-                        {...(isExternal(link.url)
-                          ? { target: '_blank', rel: 'noopener noreferrer' }
-                          : {})}
-                        className="contact-item"
-                      >
-                        <span className="ci-icon">
-                          <i className={link.icon} aria-hidden="true"></i>
-                        </span>
-                        <span className="ci-text">
-                          <strong>{link.label}</strong>
-                          <span className="ci-value">{link.value}</span>
-                        </span>
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <div className="contact-grid">
+                <div className="contact-info">
+                  <div className="section-tag">{setting('contact_tag')}</div>
+                  <h2
+                    className="section-title"
+                    dangerouslySetInnerHTML={{ __html: setting('contact_title') }}
+                  />
+                  <p>{setting('contact_text')}</p>
 
-              <div className="contact-form-wrap reveal">
-                <ContactForm
-                  projectTypes={settingLines('contact_project_types')}
-                  successMessage={setting('contact_success_msg')}
-                  submitLabel={setting('contact_btn_label')}
-                />
+                  {contactLinks.length > 0 && (
+                    <div className="contact-items">
+                      {contactLinks.map((link) => (
+                        <a
+                          key={link.id}
+                          href={link.url}
+                          {...(isExternal(link.url)
+                            ? { target: '_blank', rel: 'noopener noreferrer' }
+                            : {})}
+                          className="contact-item"
+                        >
+                          <span className="ci-icon">
+                            <i className={link.icon} aria-hidden="true"></i>
+                          </span>
+                          <span className="ci-text">
+                            <strong>{link.label}</strong>
+                            <span className="ci-value">{link.value}</span>
+                          </span>
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="contact-form-wrap">
+                  <ContactForm
+                    projectTypes={settingLines('contact_project_types')}
+                    successMessage={setting('contact_success_msg')}
+                    submitLabel={setting('contact_btn_label')}
+                  />
+                </div>
               </div>
             </div>
           </div>

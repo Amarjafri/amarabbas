@@ -96,6 +96,33 @@ export default function ProjectForm({
           </div>
 
           <div className="form-group">
+            <label>Short Summary</label>
+            <textarea
+              name="summary"
+              rows={2}
+              maxLength={300}
+              defaultValue={project?.summary ?? ''}
+              placeholder="Two or three lines on what the system does."
+            />
+            <small style={{ display: 'block', marginTop: '.35rem', fontSize: '.78rem', color: 'var(--muted)' }}>
+              Shown on the homepage. Falls back to a shortened description when empty.
+            </small>
+          </div>
+
+          <div className="form-group">
+            <label>My Role (comma-separated)</label>
+            <input
+              type="text"
+              name="role"
+              defaultValue={project?.role ?? ''}
+              placeholder="Backend, Database, Integration"
+            />
+            <small style={{ display: 'block', marginTop: '.35rem', fontSize: '.78rem', color: 'var(--muted)' }}>
+              Only what you actually did. Leave blank to hide the Role line.
+            </small>
+          </div>
+
+          <div className="form-group">
             <label>Description *</label>
             <textarea
               name="description"

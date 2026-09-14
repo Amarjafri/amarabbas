@@ -96,12 +96,11 @@ export default function ProjectsPage() {
                       </a>
                     )}
                   </div>
-                  {project.is_featured && <span className="pfc-badge">Featured</span>}
                 </div>
                 <div className="pfc-info">
                   <span className="pfc-category">{project.category}</span>
-                  <h3 className="pfc-title">{project.title}</h3>
-                  <p className="pfc-desc">{strLimit(project.description, 110)}</p>
+                  <h2 className="pfc-title">{project.title}</h2>
+                  <p className="pfc-desc">{project.summary || strLimit(project.description, 110)}</p>
                   {project.impact && <p className="proj-impact">{project.impact}</p>}
                   <div className="pfc-tech">
                     {splitCommas(project.tech_stack)

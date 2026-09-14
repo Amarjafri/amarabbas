@@ -1,37 +1,35 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter_Tight, JetBrains_Mono, Newsreader } from 'next/font/google'
+import { IBM_Plex_Mono, Inter, Space_Grotesk } from 'next/font/google'
 
-import './globals.css'
+import './styles/base.css'
+import './styles/home.css'
+import './styles/pages.css'
 import SiteBehaviour from '@/components/SiteBehaviour'
 import SiteFooter from '@/components/SiteFooter'
 import SiteHeader from '@/components/SiteHeader'
 import { setting } from '@/lib/data'
 
 // Self-hosted by next/font instead of fetched from Google at runtime.
-// globals.css maps --font-display/-body/-mono onto these variables.
-//
-// The display face carries a real italic: .hero-title em asks for one, and
-// without the file loaded the browser fakes it by slanting the upright glyphs —
-// which reads as cheap at 4.6rem. Keep 'italic' in style whenever this changes.
-const newsreader = Newsreader({
+// globals.css maps --font-display/-body/-mono onto these variables:
+// Space Grotesk for headings, Inter for reading, IBM Plex Mono for metadata.
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
+})
+
+const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600'],
-  style: ['normal', 'italic'],
-  variable: '--font-newsreader',
+  variable: '--font-inter',
   display: 'swap',
 })
 
-const interTight = Inter_Tight({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-inter-tight',
-  display: 'swap',
-})
-
-const jetbrainsMono = JetBrains_Mono({
+const plexMono = IBM_Plex_Mono({
   subsets: ['latin'],
   weight: ['400', '500'],
-  variable: '--font-jetbrains-mono',
+  variable: '--font-plex-mono',
   display: 'swap',
 })
 
@@ -62,17 +60,16 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#12161a' },
-    { media: '(prefers-color-scheme: light)', color: '#fbfaf8' },
-  ],
+  themeColor: '#0b1120',
 }
 
 /**
- * Applies the stored theme before first paint so there is no flash — the same
- * inline script the Blade layout carried in its <head>.
+ * Applies the stored theme before first paint so there is no flash. Dark is
+ * the default; light only applies once chosen with the toggle. Also marks the
+ * page as scripted, so reveal effects never hide content when JS is off.
  */
 const themeScript = `(function () {
+  document.documentElement.classList.add('js');
   try {
     var t = localStorage.getItem('theme');
     if (t === 'dark' || t === 'light') {
@@ -85,7 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${newsreader.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
+      className={`${spaceGrotesk.variable} ${inter.variable} ${plexMono.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -96,6 +93,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        {/* Decorative layers: animated glow orbs + grid, cursor glow, scroll progress */}
+        <div className="site-bg" aria-hidden="true">
+          <span className="orb orb-a"></span>
+          <span className="orb orb-b"></span>
+          <span className="orb orb-c"></span>
+          <span className="bg-grid"></span>
+        </div>
+        <div className="cursor-glow" aria-hidden="true"></div>
+        <div className="scroll-progress" aria-hidden="true"></div>
+
         <SiteHeader />
 
         <main>{children}</main>

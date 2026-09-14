@@ -25,7 +25,7 @@ export default function ProjectGallery({ images, title }: { images: string[]; ti
   return (
     <>
       <div className="pd-gallery">
-        <h4>Project Gallery</h4>
+        <h2>Project Gallery</h2>
         <div className="gallery-grid">
           {images.map((img, index) => (
             <button
@@ -49,8 +49,11 @@ export default function ProjectGallery({ images, title }: { images: string[]; ti
         id="lightbox"
         onClick={() => setActive(null)}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={active ?? ''} id="lightboxImg" alt={`${title} — gallery`} />
+        {/* Only rendered while open: an empty src makes the browser re-request the page. */}
+        {active && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={active} id="lightboxImg" alt={`${title} — gallery`} />
+        )}
         <button className="lightbox-close" onClick={() => setActive(null)} type="button">
           ✕
         </button>

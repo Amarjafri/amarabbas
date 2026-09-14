@@ -48,7 +48,7 @@ export const CONTENT_TYPES: Record<string, ContentTypeConfig> = {
       duration: { label: 'Duration', type: 'text', max: 60, placeholder: '1 yr 5 mos', hint: 'Optional. Leave empty to hide.', width: 'half' },
       location: { label: 'Location', type: 'text', max: 150, placeholder: 'Lahore, Pakistan · On-site' },
       is_current: { label: 'This is my current job', type: 'checkbox', hint: 'Adds the green "Current" badge.' },
-      bullets: { label: 'Responsibilities', type: 'textarea', rows: 5, hint: 'One bullet point per line.', placeholder: 'Built scalable web applications with Laravel\nDesigned RESTful APIs' },
+      bullets: { label: 'Achievements', type: 'textarea', rows: 5, hint: 'One per line. Two or three of your strongest read best.', placeholder: 'Built scalable web applications with Laravel\nDesigned RESTful APIs' },
       tags: { label: 'Tech Tags', type: 'text', max: 300, hint: 'Comma separated.', placeholder: 'Laravel, Vue.js, MySQL' },
     },
   },
@@ -58,13 +58,13 @@ export const CONTENT_TYPES: Record<string, ContentTypeConfig> = {
     label: 'Skill Groups',
     singular: 'Skill Group',
     icon: 'fas fa-layer-group',
-    intro: 'The cards in the Technical Skills section. Each card is one group of pills.',
+    intro: 'The groups in the Skills section. The first group is shown largest — keep your specialisation (Laravel, PHP) there.',
     collection: 'skill_groups',
     columns: { title: 'Group', skills: 'Skills' },
     fields: {
       icon: { label: 'Icon Class', type: 'icon', required: true, max: 80, placeholder: 'fas fa-code', width: 'half' },
       title: { label: 'Group Title', type: 'text', required: true, max: 120, placeholder: 'Languages & Frameworks', width: 'half' },
-      skills: { label: 'Skills', type: 'textarea', rows: 3, hint: 'Comma separated — each becomes a pill.', placeholder: 'PHP, Laravel, Vue.js, JavaScript' },
+      skills: { label: 'Skills', type: 'textarea', rows: 3, hint: 'Comma separated.', placeholder: 'PHP, Laravel, Vue.js, JavaScript' },
     },
   },
 
@@ -73,7 +73,7 @@ export const CONTENT_TYPES: Record<string, ContentTypeConfig> = {
     label: 'Tech Stack',
     singular: 'Tech Item',
     icon: 'fas fa-microchip',
-    intro: 'Icons inside the tech-stack card in the About section.',
+    intro: 'Icons in the scrolling tech strip under the hero and the tech-stack card in About. Laravel, MySQL and REST APIs also float beside the hero photo.',
     collection: 'tech_items',
     columns: { label: 'Technology', icon: 'Icon' },
     fields: {

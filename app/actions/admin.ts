@@ -216,6 +216,8 @@ export async function saveProject(_previous: ActionState, formData: FormData): P
       slug: existing?.slug ?? makeSlug(title),
       category: text(formData, 'category'),
       project_type: nullableText(formData, 'project_type'),
+      summary: nullableText(formData, 'summary'),
+      role: nullableText(formData, 'role'),
       description: text(formData, 'description'),
       impact: nullableText(formData, 'impact'),
       challenges: nullableText(formData, 'challenges'),

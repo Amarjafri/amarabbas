@@ -35,7 +35,7 @@
     {
         "id": 4,
         "label": "Projects",
-        "url": "/projects",
+        "url": "#projects-home",
         "sort_order": 3,
         "in_header": true,
         "in_footer": true,

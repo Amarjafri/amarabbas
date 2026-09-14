@@ -4,36 +4,33 @@ import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
 /**
- * Port of public/js/app.js.
+ * All client-side motion and behaviour for the public site, so every page and
+ * section can stay a server component:
  *
- * Motion budget is unchanged: reveal-on-scroll, stat count-up, nav state.
- * Everything animated is guarded by prefers-reduced-motion.
+ *   window-level (mounted once)  theme toggle, nav state, scroll progress,
+ *                                cursor glow, mobile menu
+ *   page-level (per route)       scroll spy, reveal, stat count-up, typing
+ *                                headline, 3D tilt, smooth anchors, filters
  *
- * Split into two effects because Next keeps the layout mounted across client
- * navigations: the header/window wiring runs once, while anything that binds to
- * elements belonging to a page re-runs whenever the route changes.
+ * Anything animated checks prefers-reduced-motion and falls back to the final
+ * state, so the page reads the same with motion switched off.
  */
 export default function SiteBehaviour() {
   const pathname = usePathname()
 
-  // ── Mounted once: header and window-level wiring ─────────────────────────
+  // ── Mounted once ─────────────────────────────────────────────────────────
   useEffect(() => {
     const cleanups: Array<() => void> = []
+    const root = document.documentElement
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const finePointer = window.matchMedia('(pointer: fine)').matches
 
     // ── THEME ────────────────────────────────────────────────
-    // The inline <head> script has already applied the stored theme before
-    // first paint. This only wires up the toggle.
+    // The inline <head> script already applied a stored choice. Dark is default.
     const toggle = document.getElementById('themeToggle')
     if (toggle) {
       const onToggle = () => {
-        const root = document.documentElement
-        let current = root.getAttribute('data-theme')
-
-        // No explicit choice yet — resolve what's actually on screen.
-        if (!current) {
-          current = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
-        }
-
+        const current = root.getAttribute('data-theme') || 'dark'
         const next = current === 'dark' ? 'light' : 'dark'
         root.setAttribute('data-theme', next)
 
@@ -43,36 +40,69 @@ export default function SiteBehaviour() {
           /* private mode — the choice just won't persist */
         }
 
-        toggle.setAttribute(
-          'aria-label',
-          next === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'
-        )
+        toggle.setAttribute('aria-label', next === 'dark' ? 'Switch to light theme' : 'Switch to dark theme')
       }
 
       toggle.addEventListener('click', onToggle)
       cleanups.push(() => toggle.removeEventListener('click', onToggle))
     }
 
-    // ── NAV: background on scroll ────────────────────────────
+    // ── NAV STATE + SCROLL PROGRESS ──────────────────────────
     const navbar = document.getElementById('navbar')
-    if (navbar) {
-      let ticking = false
+    let scrollTicking = false
 
-      const update = () => {
-        navbar.classList.toggle('scrolled', window.scrollY > 24)
-        ticking = false
+    const onScrollFrame = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      root.style.setProperty('--scroll', String(max > 0 ? Math.min(window.scrollY / max, 1) : 0))
+      navbar?.classList.toggle('scrolled', window.scrollY > 24)
+      scrollTicking = false
+    }
+
+    const onScroll = () => {
+      if (!scrollTicking) {
+        scrollTicking = true
+        window.requestAnimationFrame(onScrollFrame)
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+    onScrollFrame()
+    cleanups.push(() => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    })
+
+    // ── CURSOR GLOW (mouse/trackpad only) ────────────────────
+    if (finePointer && !reduceMotion) {
+      let x = window.innerWidth / 2
+      let y = window.innerHeight / 3
+      let pending = false
+
+      const paint = () => {
+        root.style.setProperty('--mx', `${x}px`)
+        root.style.setProperty('--my', `${y}px`)
+        pending = false
       }
 
-      const onScroll = () => {
-        if (!ticking) {
-          ticking = true
-          window.requestAnimationFrame(update)
+      const onMove = (event: PointerEvent) => {
+        x = event.clientX
+        y = event.clientY
+        root.classList.add('has-cursor')
+        if (!pending) {
+          pending = true
+          window.requestAnimationFrame(paint)
         }
       }
 
-      window.addEventListener('scroll', onScroll, { passive: true })
-      update()
-      cleanups.push(() => window.removeEventListener('scroll', onScroll))
+      const onLeave = () => root.classList.remove('has-cursor')
+
+      window.addEventListener('pointermove', onMove, { passive: true })
+      document.addEventListener('pointerleave', onLeave)
+      cleanups.push(() => {
+        window.removeEventListener('pointermove', onMove)
+        document.removeEventListener('pointerleave', onLeave)
+      })
     }
 
     // ── MOBILE MENU ──────────────────────────────────────────
@@ -86,7 +116,8 @@ export default function SiteBehaviour() {
         overlay.setAttribute('aria-hidden', 'false')
         hamburger.setAttribute('aria-expanded', 'true')
         document.body.style.overflow = 'hidden'
-        if (closeBtn) closeBtn.focus()
+        // Wait a frame: the overlay is not focusable until it has been shown.
+        if (closeBtn) window.requestAnimationFrame(() => closeBtn.focus())
       }
 
       const close = () => {
@@ -106,13 +137,13 @@ export default function SiteBehaviour() {
       const links = Array.from(overlay.querySelectorAll('a'))
 
       hamburger.addEventListener('click', open)
-      if (closeBtn) closeBtn.addEventListener('click', close)
+      closeBtn?.addEventListener('click', close)
       links.forEach((a) => a.addEventListener('click', close))
       document.addEventListener('keydown', onKeydown)
 
       cleanups.push(() => {
         hamburger.removeEventListener('click', open)
-        if (closeBtn) closeBtn.removeEventListener('click', close)
+        closeBtn?.removeEventListener('click', close)
         links.forEach((a) => a.removeEventListener('click', close))
         document.removeEventListener('keydown', onKeydown)
         document.body.style.overflow = ''
@@ -122,9 +153,10 @@ export default function SiteBehaviour() {
     return () => cleanups.forEach((fn) => fn())
   }, [])
 
-  // ── Re-run per page: anything bound to page-owned elements ───────────────
+  // ── Re-run per page ──────────────────────────────────────────────────────
   useEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const finePointer = window.matchMedia('(pointer: fine)').matches
     const cleanups: Array<() => void> = []
 
     // ── NAV: active section highlight ────────────────────────
@@ -136,7 +168,7 @@ export default function SiteBehaviour() {
 
       const update = () => {
         let current = ''
-        const offset = window.scrollY + 140
+        const offset = window.scrollY + 160
 
         sections.forEach((sec) => {
           if (offset >= sec.offsetTop) current = sec.id
@@ -144,7 +176,7 @@ export default function SiteBehaviour() {
 
         spyLinks.forEach((a) => {
           const href = a.getAttribute('href') || ''
-          a.classList.toggle('active', current !== '' && href.indexOf('#' + current) !== -1)
+          a.classList.toggle('active', current !== '' && href.endsWith('#' + current))
         })
 
         ticking = false
@@ -158,105 +190,203 @@ export default function SiteBehaviour() {
       }
 
       window.addEventListener('scroll', onScroll, { passive: true })
+      update()
       cleanups.push(() => window.removeEventListener('scroll', onScroll))
     }
 
     // ── REVEAL ON SCROLL ─────────────────────────────────────
-    // Fade + 8px rise, 60ms stagger, fires once per element.
+    // Direction and delay come from CSS (.reveal-left, style="--d: 120ms").
     const revealItems = document.querySelectorAll<HTMLElement>('.reveal')
 
     if (revealItems.length) {
       if (reduceMotion || !('IntersectionObserver' in window)) {
         revealItems.forEach((el) => el.classList.add('visible'))
       } else {
-        const timers: number[] = []
-
         const observer = new IntersectionObserver(
           (entries) => {
-            let shown = 0
-
             entries.forEach((entry) => {
               if (!entry.isIntersecting) return
-              const delay = shown * 60
-              shown++
-              timers.push(
-                window.setTimeout(() => entry.target.classList.add('visible'), delay)
-              )
+              entry.target.classList.add('visible')
               observer.unobserve(entry.target)
             })
           },
-          { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+          { threshold: 0.12, rootMargin: '0px 0px -60px 0px' }
         )
 
         revealItems.forEach((el) => observer.observe(el))
-        cleanups.push(() => {
-          observer.disconnect()
-          timers.forEach((id) => window.clearTimeout(id))
-        })
+        cleanups.push(() => observer.disconnect())
       }
     }
 
     // ── STAT COUNT-UP ────────────────────────────────────────
-    // Preserves any non-digit characters ("3+", "100%") around the number.
+    // Keeps any non-digit characters ("4+", "100%") around the number.
     const nums = document.querySelectorAll<HTMLElement>('.stat-n, .esc-n')
 
     if (nums.length && !reduceMotion && 'IntersectionObserver' in window) {
+      const frames: number[] = []
+
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return
 
             const el = entry.target as HTMLElement
-            const text = (el.textContent || '').trim()
-            const match = text.match(/(\d+)/)
+            const text = el.dataset.value || (el.textContent || '').trim()
+            el.dataset.value = text
             observer.unobserve(el)
+
+            const match = text.match(/(\d+)/)
             if (!match || match.index === undefined) return
 
             const target = parseInt(match[1], 10)
-            if (!target) return
-
             const prefix = text.slice(0, match.index)
             const suffix = text.slice(match.index + match[1].length)
-            const duration = 700
+            const duration = 1400
             let start: number | null = null
 
             const tick = (now: number) => {
               if (start === null) start = now
               const progress = Math.min((now - start) / duration, 1)
-              // ease-out cubic
-              const eased = 1 - Math.pow(1 - progress, 3)
+              const eased = 1 - Math.pow(1 - progress, 4)
               el.textContent = prefix + Math.round(eased * target) + suffix
-              if (progress < 1) window.requestAnimationFrame(tick)
+              if (progress < 1) frames.push(window.requestAnimationFrame(tick))
             }
 
-            window.requestAnimationFrame(tick)
+            frames.push(window.requestAnimationFrame(tick))
           })
         },
-        { threshold: 0.5 }
+        { threshold: 0.6 }
       )
 
       nums.forEach((el) => observer.observe(el))
-      cleanups.push(() => observer.disconnect())
+      cleanups.push(() => {
+        observer.disconnect()
+        frames.forEach((id) => window.cancelAnimationFrame(id))
+        nums.forEach((el) => {
+          if (el.dataset.value) el.textContent = el.dataset.value
+        })
+      })
+    }
+
+    // ── TYPING HEADLINE ──────────────────────────────────────
+    const typers = document.querySelectorAll<HTMLElement>('[data-words]')
+
+    typers.forEach((el) => {
+      const output = el.querySelector<HTMLElement>('.type-text')
+      let words: string[] = []
+      try {
+        words = JSON.parse(el.dataset.words || '[]')
+      } catch {
+        words = []
+      }
+      if (!output || words.length < 2 || reduceMotion) return
+
+      let word = 0
+      let chars = words[0].length
+      let deleting = true
+      let timer = window.setTimeout(step, 2200)
+
+      function step() {
+        const current = words[word]
+
+        if (deleting) {
+          chars--
+          output!.textContent = current.slice(0, chars)
+          if (chars <= 0) {
+            deleting = false
+            word = (word + 1) % words.length
+          }
+          timer = window.setTimeout(step, 32)
+          return
+        }
+
+        const nextWord = words[word]
+        chars++
+        output!.textContent = nextWord.slice(0, chars)
+
+        if (chars >= nextWord.length) {
+          deleting = true
+          timer = window.setTimeout(step, 2200)
+        } else {
+          timer = window.setTimeout(step, 70)
+        }
+      }
+
+      cleanups.push(() => {
+        window.clearTimeout(timer)
+        output.textContent = words[0]
+      })
+    })
+
+    // ── 3D TILT ──────────────────────────────────────────────
+    if (finePointer && !reduceMotion) {
+      const tiltables = Array.from(document.querySelectorAll<HTMLElement>('[data-tilt]'))
+
+      tiltables.forEach((el) => {
+        const max = Number(el.dataset.tilt) || 8
+        let frame = 0
+
+        const onMove = (event: PointerEvent) => {
+          const rect = el.getBoundingClientRect()
+          const px = (event.clientX - rect.left) / rect.width
+          const py = (event.clientY - rect.top) / rect.height
+
+          window.cancelAnimationFrame(frame)
+          frame = window.requestAnimationFrame(() => {
+            el.style.setProperty('--rx', `${(0.5 - py) * max}deg`)
+            el.style.setProperty('--ry', `${(px - 0.5) * max}deg`)
+            el.style.setProperty('--gx', `${px * 100}%`)
+            el.style.setProperty('--gy', `${py * 100}%`)
+            el.classList.add('is-tilting')
+          })
+        }
+
+        const onLeave = () => {
+          window.cancelAnimationFrame(frame)
+          el.style.setProperty('--rx', '0deg')
+          el.style.setProperty('--ry', '0deg')
+          el.classList.remove('is-tilting')
+        }
+
+        el.addEventListener('pointermove', onMove)
+        el.addEventListener('pointerleave', onLeave)
+        cleanups.push(() => {
+          el.removeEventListener('pointermove', onMove)
+          el.removeEventListener('pointerleave', onLeave)
+          window.cancelAnimationFrame(frame)
+        })
+      })
     }
 
     // ── SMOOTH SCROLL for in-page anchors ────────────────────
-    const anchors = Array.from(document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'))
+    // Delegated, in the capture phase, so it runs before next/link. Header links
+    // are "/#section": once the URL already ends in that hash the router treats
+    // a repeat click as a no-op and nothing scrolls. So on the home page every
+    // hash link is scrolled here — on every click, not just the first.
+    const onAnchorClick = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0) return
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
 
-    const onAnchorClick = function (this: HTMLAnchorElement, event: Event) {
-      const id = this.getAttribute('href')
-      if (!id || id === '#') return
+      const link = (event.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null
+      if (!link || link.target === '_blank') return
 
-      const target = document.querySelector(id)
+      const href = link.getAttribute('href') || ''
+      let hash = ''
+      if (href.startsWith('#')) hash = href
+      else if (href.startsWith('/#') && window.location.pathname === '/') hash = href.slice(1)
+      if (hash.length < 2) return
+
+      const target = document.getElementById(decodeURIComponent(hash.slice(1)))
       if (!target) return
 
       event.preventDefault()
       target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
-      // Keep the URL shareable without triggering a second jump.
-      if (history.replaceState) history.replaceState(null, '', id)
+      // Keep the URL shareable; pass the router's own state so back/forward still work.
+      if (window.location.hash !== hash) history.replaceState(history.state, '', hash)
     }
 
-    anchors.forEach((a) => a.addEventListener('click', onAnchorClick))
-    cleanups.push(() => anchors.forEach((a) => a.removeEventListener('click', onAnchorClick)))
+    document.addEventListener('click', onAnchorClick, true)
+    cleanups.push(() => document.removeEventListener('click', onAnchorClick, true))
 
     // ── CATEGORY FILTERS (projects / blog) ───────────────────
     const filterButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.filter-btn'))
@@ -281,9 +411,7 @@ export default function SiteBehaviour() {
     }
 
     filterButtons.forEach((btn) => btn.addEventListener('click', onFilterClick))
-    cleanups.push(() =>
-      filterButtons.forEach((btn) => btn.removeEventListener('click', onFilterClick))
-    )
+    cleanups.push(() => filterButtons.forEach((btn) => btn.removeEventListener('click', onFilterClick)))
 
     return () => cleanups.forEach((fn) => fn())
   }, [pathname])

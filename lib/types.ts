@@ -10,6 +10,10 @@ export interface Project {
   slug: string
   category: string
   project_type: string | null
+  /** Two or three lines on what the system does — shown on the homepage. */
+  summary?: string | null
+  /** Comma separated. Only the roles actually played; leave empty if unknown. */
+  role?: string | null
   description: string
   impact: string | null
   challenges: string | null
