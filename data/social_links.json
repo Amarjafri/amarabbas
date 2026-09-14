@@ -16,16 +16,16 @@
     {
         "id": 2,
         "icon": "fab fa-whatsapp",
-        "label": "Phone / WhatsApp",
-        "value": "+92 314 616 7055",
-        "url": "https://wa.me/923146167055",
+        "label": "WhatsApp",
+        "value": "+44 7411 449732",
+        "url": "https://wa.me/447411 449732",
         "sort_order": 1,
         "in_contact": true,
         "in_footer": true,
         "is_social_btn": false,
         "active": true,
         "created_at": "2026-07-30T05:17:46.000Z",
-        "updated_at": "2026-07-30T05:17:46.000Z"
+        "updated_at": "2026-09-14T05:08:36.000Z"
     },
     {
         "id": 3,
